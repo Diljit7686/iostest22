@@ -134,15 +134,18 @@ class ViewController: UIViewController {
         
     }
     @objc func fireTimer() {
-        print("Timer fired!")
+       // print("Timer fired!")
         runCount -= 1
-        
+        let str2 = String(runCount)
+        timeLabel.text = str2
+    
         if runCount == 0 {
             timer?.invalidate()
-        }
+            
+         
     }
     
     
-
+    }
 }
 
