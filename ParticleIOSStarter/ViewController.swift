@@ -41,7 +41,7 @@ class ViewController: UIViewController {
         displayLink.add(to: .current, forMode: .defaultRunLoopMode)
         
         
-    
+    //timer
         
         self.timeRunned = timeRunned - 1;
         // 1. Initialize the SDK
