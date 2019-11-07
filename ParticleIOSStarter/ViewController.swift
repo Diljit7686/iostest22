@@ -20,16 +20,29 @@ class ViewController: UIViewController {
     var myPhoton : ParticleDevice?
     
     @IBOutlet weak var timeLabel: UILabel!
-    
+    var timer: Timer?
+    var runCount = 20
     var timeRunned = 20;
     @IBAction func StartTimer(_ sender: UIButton) {
         
         turnParticleGreen();
         
     }
+ 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(fireTimer), userInfo: nil, repeats: true)
+        
+        let displayLink = CADisplayLink(target: self, selector: #selector(fireTimer))
+        displayLink.add(to: .current, forMode: .defaultRunLoopMode)
+        
+        
+    
+        
         self.timeRunned = timeRunned - 1;
         // 1. Initialize the SDK
         ParticleCloud.init()
@@ -74,29 +87,29 @@ class ViewController: UIViewController {
     
     
     //MARK: Subscribe to "playerChoice" events on Particle
-    func subscribeToParticleEvents() {
-        var handler : Any?
-        handler = ParticleCloud.sharedInstance().subscribeToDeviceEvents(
-            withPrefix: "playerChoice",
-            deviceID:self.DEVICE_ID,
-            handler: {
-                (event :ParticleEvent?, error : Error?) in
-                
-                if let _ = error {
-                    print("could not subscribe to events")
-                } else {
-                    print("got event with data \(event?.data)")
-                    let choice = (event?.data)!
-                    if (choice == "A") {
-                      //  self.turnParticleGreen()
-                      //  self.gameScore = self.gameScore + 1;
-                    }
-                    else if (choice == "B") {
-                     //   self.turnParticleRed()
-                    }
-                }
-        })
-    }
+//    func subscribeToParticleEvents() {
+//        var handler : Any?
+//        handler = ParticleCloud.sharedInstance().subscribeToDeviceEvents(
+//            withPrefix: "playerChoice",
+//            deviceID:self.DEVICE_ID,
+//            handler: {
+//                (event :ParticleEvent?, error : Error?) in
+//
+//                if let _ = error {
+//                    print("could not subscribe to events")
+//                } else {
+//                    print("got event with data \(event?.data)")
+//                    let choice = (event?.data)!
+//                    if (choice == "A") {
+//                      //  self.turnParticleGreen()
+//                      //  self.gameScore = self.gameScore + 1;
+//                    }
+//                    else if (choice == "B") {
+//                     //   self.turnParticleRed()
+//                    }
+//                }
+//        })
+//    }
     
     
     
@@ -106,7 +119,7 @@ class ViewController: UIViewController {
         
         print("Pressed the change lights button")
         
-        let parameters = ["start"]
+        let parameters = ["off"]
      var task = myPhoton!.callFunction("controlLights", withArguments: parameters) {
             (resultCode : NSNumber?, error : Error?) -> Void in
             if (error == nil) {
@@ -120,7 +133,14 @@ class ViewController: UIViewController {
         
         
     }
-    
+    @objc func fireTimer() {
+        print("Timer fired!")
+        runCount -= 1
+        
+        if runCount == 0 {
+            timer?.invalidate()
+        }
+    }
     
     
 
